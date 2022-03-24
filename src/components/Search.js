@@ -1,99 +1,139 @@
-import React, { useEffect, useState } from "react";
-import '../App.css'
-import Header from "./Header";
+import React, { useEffect, useState } from 'react'
+import Header from './Header'
+import { CardGroup, Card } from 'react-bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Columns from 'react-columns'
+import {Form} from 'react-bootstrap'
 
-import LineGraph from "./LineGraph";
-// import LineGraph from "./LineGraph";
 
+export default function Search() {
+  const[latest,setLatest]=useState([])
+  const[results, setResults]=useState([])
+  const[searchCountries, setSearchCountries]=useState('')
   
-function CovidData() {
-  const [country, setCountry] = useState("");
-  const [cases, setCases] = useState("");
-  const [recovered, setRecovered] = useState("");
-  const [deaths, setDeaths] = useState("");
-  const [todayCases, setTodayCases] = useState("");
-  const [deathCases, setDeathCases] = useState("");
-  const [recoveredCases, setRecoveredCases] = useState("");
-  const [userInput, setUserInput] = useState("");
-  
-  useEffect(() => {
-    fetch("https://disease.sh/v3/covid-19/countries")
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-      });
-  }, []);
-  
-  const setData = ({
-    country,
-    cases,
-    deaths,
 
-    recovered,
-    todayCases,
-    todayDeaths,
-    todayRecovered,
-  }) => {
-    setCountry(country);
-    setCases(cases);
-    setRecovered(recovered);
-    setDeaths(deaths);
-    setTodayCases(todayCases);
-    setDeathCases(todayDeaths);
-    setRecoveredCases(todayRecovered);
-  };
-  
-  const handleSearch = (e) => {
-    setUserInput(e.target.value);
-  };
-  const handleSubmit = (props) => {
-    props.preventDefault();
-    fetch(`https://disease.sh/v3/covid-19/countries/${userInput}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-      });
-  };
-  
-  return (
-      <div>
-          <Header></Header>
-           <div className="covidData">
+  useEffect(()=>{
+    fetch('https://disease.sh/v3/covid-19/all').then((res)=>res.json())
+    .then((data)=>{
+      setLatest(data)
 
-<h1>COVID-19 CASES COUNTRY WISE</h1>
-<div className="covidData__input">
-  <form onSubmit={handleSubmit}>
-    
-    <input onChange={handleSearch} placeholder="Enter Country Name" />
-    <br />
-    <button type="submit">Search</button>
-  </form>
-</div>
+    })    
+  },[])
+
+  useEffect(()=>{
+    fetch('https://disease.sh/v3/covid-19/countries').then((res)=>res.json())
+    .then((data)=>{
+      setResults(data)
+    })
+
+  })
+  const date=new Date(parseInt(latest.updated))
+  const lastUpdated = date.toString()
 
 
-<div className="covidData__country__info">
-  <p>Country Name : {country} </p>
-
-  <p>Cases : {cases}</p>
-
-  <p>Deaths : {deaths}</p>
-
-  <p>Recovered : {recovered}</p>
-
-  <p>Cases Today : {todayCases}</p>
-
-  <p>Deaths Today : {deathCases}</p>
-
-  <p>Recovered Today : {recoveredCases}</p>
-</div>
-</div>
-<LineGraph casesType={cases}></LineGraph>
+  const filterCountries =results.filter(item=>{
+    return  searchCountries !== '' ? item.country.toLowerCase().includes(searchCountries.toLowerCase()) : item;
+  })
 
 
 
-      </div>
+  const countries = filterCountries.map((data,i)=>{
+
+    return(
+      <Card  key={i}  bg='light' text='white' className='text-center' style={{margin:"10px"}}>
+        <Card.Img variant="top" src={data.countryInfo.flag} />
+        <Card.Body>
+        <Card.Title>{data.country}</Card.Title>
+        <Card.Text>Cases {data.cases}</Card.Text>
+        <Card.Text>Deaths {data.deaths}</Card.Text>
+        <Card.Text>Recovered {data.recovered}</Card.Text>
+        <Card.Text>Today's cases {data.todayCases}</Card.Text>
+        <Card.Text>Today's deaths {data.todayDeaths}</Card.Text>
+        <Card.Text>Active {data.active}</Card.Text>
+        <Card.Text>Critical {data.critical}</Card.Text>
+        </Card.Body>
+      </Card>
+
+    )})
+
+    var queries = [
+      {
+        columns: 2,
+        query: "min-width: 500px",
+      },
+      {
+        columns: 3,
+        query: "min-width: 1000px",
+      },
+    ];
+
    
-  );
-}
   
-export default CovidData;
+    
+
+  return (
+    <div>  
+<Header ></Header>
+   
+     <CardGroup>
+  <Card bg="secondary" text='white' className='text-center' style={{margin:"10px"}}>
+   
+    <Card.Body>
+      <Card.Title>Cases</Card.Title>
+      <Card.Text>{latest.cases}</Card.Text>
+    </Card.Body>
+    <Card.Footer>
+      <small>Last updated {lastUpdated}</small>
+    </Card.Footer>
+  </Card>
+  <Card bg="danger" text='white' className='text-center' style={{margin:"10px"}}>
+   
+    <Card.Body>
+      <Card.Title>Deaths</Card.Title>
+      <Card.Text>{latest.deaths}</Card.Text>
+    </Card.Body>
+    <Card.Footer>
+      <small>Last updated {lastUpdated}</small>
+    </Card.Footer>
+  </Card>
+  <Card bg="success" text='white' className='text-center' style={{margin:"10px"}}>
+   
+    <Card.Body>
+      <Card.Title>Recovered</Card.Title>
+      <Card.Text>{latest.recovered}</Card.Text>
+    </Card.Body>
+    <Card.Footer>
+      <small>Last updated {lastUpdated}</small>
+    </Card.Footer>
+  </Card> 
+</CardGroup>
+<br></br>
+
+<Form>
+        <Form.Group controlId="formGroupSearch">
+          <Form.Control
+            bg="dark"
+            type="text"
+            placeholder="Search for countries"
+            onChange={(e) => setSearchCountries(e.target.value)}
+          />
+        </Form.Group>
+  </Form>
+
+
+
+
+
+<Columns queries={queries}>
+{countries}
+</Columns>
+
+
+     
+
+
+
+    </div>
+  )
+}
+

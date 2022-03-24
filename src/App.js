@@ -1,5 +1,5 @@
 import bootstrap from '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Global from './components/Global';
 
@@ -11,9 +11,20 @@ import Home from './components/Home';
 
 
 function App() {
+  const [darkTheme, setDarkTheme] = useState(false);
+
+  const handleDarkThemeChange = () => {
+    setDarkTheme(!darkTheme);
+  };
+
+
+
+
   return (
-    <div className="App">
+    <div className="App" >
       <h1>COVID-19 TRACKER</h1>
+   
+
 
     <Router>
       <Routes>

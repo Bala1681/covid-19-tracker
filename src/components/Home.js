@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+
 import Header from './Header'
 
 
@@ -33,6 +34,8 @@ export default function Home() {
             <div style={{color:"green",fontSize:"20px"}}>Today Recovered:<br/><br/>{data2}</div><br/>
             <div style={{color:"red",fontSize:"20px"}}>Today Deaths:  <br/><br/>{data3}</div><br/>
             </div>
+
+           
 
           {/* </CardContent> */}
 
