@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import Header from './Header'
-import { CardGroup, Card } from 'react-bootstrap'
+import {  Card } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Columns from 'react-columns'
 import {Form} from 'react-bootstrap'
 
 
+
 export default function Search() {
-  const[latest,setLatest]=useState([])
-  const[results, setResults]=useState([])
+   const[results, setResults]=useState([])
   const[searchCountries, setSearchCountries]=useState('')
   
-
-  useEffect(()=>{
-    fetch('https://disease.sh/v3/covid-19/all').then((res)=>res.json())
-    .then((data)=>{
-      setLatest(data)
-
-    })    
-  },[])
-
+  
   useEffect(()=>{
     fetch('https://disease.sh/v3/covid-19/countries').then((res)=>res.json())
     .then((data)=>{
@@ -27,10 +19,7 @@ export default function Search() {
     })
 
   })
-  const date=new Date(parseInt(latest.updated))
-  const lastUpdated = date.toString()
-
-
+ 
   const filterCountries =results.filter(item=>{
     return  searchCountries !== '' ? item.country.toLowerCase().includes(searchCountries.toLowerCase()) : item;
   })
@@ -40,7 +29,7 @@ export default function Search() {
   const countries = filterCountries.map((data,i)=>{
 
     return(
-      <Card  key={i}  bg='light' text='white' className='text-center' style={{margin:"10px"}}>
+      <Card  key={i}  bg='dark' text='white' className='text-center' style={{margin:"10px"}}>
         <Card.Img variant="top" src={data.countryInfo.flag} />
         <Card.Body>
         <Card.Title>{data.country}</Card.Title>
@@ -66,47 +55,9 @@ export default function Search() {
         query: "min-width: 1000px",
       },
     ];
-
-   
-  
-    
-
   return (
     <div>  
-<Header ></Header>
-   
-     <CardGroup>
-  <Card bg="secondary" text='white' className='text-center' style={{margin:"10px"}}>
-   
-    <Card.Body>
-      <Card.Title>Cases</Card.Title>
-      <Card.Text>{latest.cases}</Card.Text>
-    </Card.Body>
-    <Card.Footer>
-      <small>Last updated {lastUpdated}</small>
-    </Card.Footer>
-  </Card>
-  <Card bg="danger" text='white' className='text-center' style={{margin:"10px"}}>
-   
-    <Card.Body>
-      <Card.Title>Deaths</Card.Title>
-      <Card.Text>{latest.deaths}</Card.Text>
-    </Card.Body>
-    <Card.Footer>
-      <small>Last updated {lastUpdated}</small>
-    </Card.Footer>
-  </Card>
-  <Card bg="success" text='white' className='text-center' style={{margin:"10px"}}>
-   
-    <Card.Body>
-      <Card.Title>Recovered</Card.Title>
-      <Card.Text>{latest.recovered}</Card.Text>
-    </Card.Body>
-    <Card.Footer>
-      <small>Last updated {lastUpdated}</small>
-    </Card.Footer>
-  </Card> 
-</CardGroup>
+<Header ></Header>  
 <br></br>
 
 <Form>
@@ -119,20 +70,9 @@ export default function Search() {
           />
         </Form.Group>
   </Form>
-
-
-
-
-
 <Columns queries={queries}>
 {countries}
 </Columns>
-
-
-     
-
-
-
     </div>
   )
 }

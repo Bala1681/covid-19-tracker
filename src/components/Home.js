@@ -1,46 +1,84 @@
 import React, { useEffect, useState } from 'react'
-
 import Header from './Header'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { CardGroup, Card } from 'react-bootstrap'
+
+
 
 
 export default function Home() {
-  const[data,setData]=useState()
-  const [data1 ,setData1 ] = useState()
-  const [data2 ,setData2 ] = useState()
-  const [data3 ,setData3 ] = useState()
-  
+  const[latest,setLatest]=useState([])
+ 
 
   useEffect(()=>{
-    fetch('https://disease.sh/v3/covid-19/all').then((res)=>res.json()).then((data)=>{
-      setData(data.active);
-      setData1(data.todayCases);
-      setData2(data.todayRecovered);
-      setData3(data.todayDeaths)     
+    fetch('https://disease.sh/v3/covid-19/all').then((res)=>res.json())
+    .then((data)=>{
+      setLatest(data)
+
     })
   },[])
 
+  const date=new Date(parseInt(latest.updated))
+  const lastUpdated = date.toString()
+
+
+
+
+
   return (
     <div>
-        <Header></Header>
-        <h1>COVID-19</h1>
-        <br/>
-        <div>Global content</div>
-        
-          {/* <Card> */}
-          {/* <CardContent> */}
-           <div className='count'>
-            <div style={{color:"yellow", fontSize:"20px"}}>Active Cases:<br/><br/> {data}</div><br/>
-            <div style={{color:"orange",fontSize:"20px"}}>Today Cases:<br/><br/>{data1} </div><br/>
-            <div style={{color:"green",fontSize:"20px"}}>Today Recovered:<br/><br/>{data2}</div><br/>
-            <div style={{color:"red",fontSize:"20px"}}>Today Deaths:  <br/><br/>{data3}</div><br/>
-            </div>
+<Header></Header>
+    <CardGroup >
+  <Card bg="secondary" text='white' className='text-center' style={{margin:"10px"}}>
+   
+    <Card.Body>
+      <Card.Title>Cases</Card.Title>
+      <Card.Text>{latest.cases}</Card.Text>
+    </Card.Body>
+    <Card.Footer>
+      <small>Last updated {lastUpdated}</small>
+    </Card.Footer>
+  </Card>
+  <Card bg="info" text='white' className='text-center' style={{margin:"10px"}}>
+   
+    <Card.Body>
+      <Card.Title>Active</Card.Title>
+      <Card.Text>{latest.active}</Card.Text>
+    </Card.Body>
+    <Card.Footer>
+      <small>Last updated {lastUpdated}</small>
+    </Card.Footer>
+  </Card>
+  
+  <Card bg="danger" text='white' className='text-center' style={{margin:"10px"}}>
+   
+    <Card.Body>
+      <Card.Title>Deaths</Card.Title>
+      <Card.Text>{latest.deaths}</Card.Text>
+    </Card.Body>
+    <Card.Footer>
+      <small>Last updated {lastUpdated}</small>
+    </Card.Footer>
+  </Card>
+  <Card bg="success" text='white' className='text-center' style={{margin:"10px"}}>
+   
+    <Card.Body>
+      <Card.Title>Recovered</Card.Title>
+      <Card.Text>{latest.recovered}</Card.Text>
+    </Card.Body>
+    <Card.Footer>
+      <small>Last updated {lastUpdated}</small>
+    </Card.Footer>
+  </Card> 
+</CardGroup>
 
-           
 
-          {/* </CardContent> */}
 
-        {/* </Card> */}        
-       
+
+
+
+
+
     </div>
   )
 }
