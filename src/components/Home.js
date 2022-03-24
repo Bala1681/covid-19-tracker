@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Header from './Header'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { CardGroup, Card } from 'react-bootstrap'
-
+import CountryPicker from '../CountryPicker'
 
 
 
@@ -20,9 +20,6 @@ export default function Home() {
 
   const date=new Date(parseInt(latest.updated))
   const lastUpdated = date.toString()
-
-
-
 
 
   return (
@@ -72,10 +69,7 @@ export default function Home() {
   </Card> 
 </CardGroup>
 
-
-
-
-
+<CountryPicker></CountryPicker>
 
 
 
